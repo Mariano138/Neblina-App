@@ -20,11 +20,12 @@ const HomeScreen = () => {
   };
 
   return (
-    <View f={1} mt={"30"} ml={"30"} mr={"30"}>
+    <View f={1} mt={"30"} mx={"30"}>
       <XStack jc={"space-between"}>
         <Text fontSize={25}>Neblina</Text>
         <Button circular bg={"#E0E0E0"} size={42} icon={Settings}></Button>
       </XStack>
+
       <NotesComponent notes={notes} />
 
       <ButtonsAdd addNote={addNote} />

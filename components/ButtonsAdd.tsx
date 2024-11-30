@@ -1,4 +1,4 @@
-import { Button, XStack } from "tamagui";
+import { Button, View, XStack } from "tamagui";
 import {
   MessageCircleWarning,
   Calendar,

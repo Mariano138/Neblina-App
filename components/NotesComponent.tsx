@@ -1,6 +1,7 @@
-import { View, Text } from "tamagui";
 import React from "react";
-import { FlatList } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
+import Note from "./Note";
+import { View } from "tamagui";
 
 type note = {
   title: string;
@@ -15,22 +16,33 @@ type Props = {
 const NotesComponent = ({ notes }: Props) => {
   const renderItem = ({ item }: { item: note }) => {
     return (
-      <View>
-        <Text>{item.title}</Text>
-        <Text>{item.note}</Text>
+      <View
+        mt={38}
+        style={styles.containerShadow}
+        w={340}
+        h={258}
+        bg={"#E4F0FF"}
+        br={25}
+      >
+        <Note item={item} />
       </View>
     );
   };
 
   return (
-    <View>
-      <FlatList
-        data={notes}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-      />
-    </View>
+    <FlatList
+      data={notes}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.id.toString()}
+    />
   );
 };
+
+const styles = StyleSheet.create({
+  containerShadow: {
+    boxShadow:
+      "10px 10px 4px rgba(0, 0, 0, 0.3), inset 1px 1px 4px rgba(0, 0, 0, 0.4)",
+  },
+});
 
 export default NotesComponent;

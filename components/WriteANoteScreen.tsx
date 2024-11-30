@@ -33,13 +33,14 @@ const WriteANoteScreen = ({ setPressed, addNote }: Props) => {
 
   return (
     <View
+      f={1}
       bg={"#FFF6E5"}
       minHeight={"408"}
       h={"auto"}
       w={"100%"}
       br={20}
       pos={"absolute"}
-      top={"10%"}
+      top={0}
       style={styles.containerShadow}
     >
       <YStack mx={32} mt={36} f={1}>
@@ -78,13 +79,7 @@ const WriteANoteScreen = ({ setPressed, addNote }: Props) => {
           </XStack>
         </XStack>
 
-        <View
-          style={{
-            borderBottomWidth: 1,
-            borderBottomColor: "#D1D1D1",
-            marginVertical: 10,
-          }}
-        />
+        <View style={styles.line} />
 
         <View f={1}>
           <TextInput
@@ -115,6 +110,11 @@ const styles = StyleSheet.create({
   },
   buttonShadow: {
     boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.4)",
+  },
+  line: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#D1D1D1",
+    marginVertical: 10,
   },
 });
 

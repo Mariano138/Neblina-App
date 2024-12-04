@@ -7,13 +7,15 @@ type note = {
   title: string;
   note: string;
   id: number;
+  date: string;
 };
 
 type Props = {
   notes: note[];
+  setNotes: React.Dispatch<React.SetStateAction<note[]>>;
 };
 
-const NotesComponent = ({ notes }: Props) => {
+const NotesComponent = ({ notes, setNotes }: Props) => {
   const renderItem = ({ item }: { item: note }) => {
     return (
       <View
@@ -24,7 +26,7 @@ const NotesComponent = ({ notes }: Props) => {
         bg={"#E4F0FF"}
         br={25}
       >
-        <Note item={item} />
+        <Note item={item} setNotes={setNotes} notes={notes} />
       </View>
     );
   };

@@ -1,17 +1,25 @@
-import { View, Input, XStack, Button, YStack } from "tamagui";
-
+import { View, Input, XStack, Button, YStack, TextArea } from "tamagui";
 import { TextInput, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { Save, Trash } from "@tamagui/lucide-icons";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 type Props = {
-  setPressed: React.Dispatch<React.SetStateAction<boolean>>;
-  addNote: (note: { title: string; note: string; id: number }) => void;
+  addNote: (note: {
+    title: string;
+    note: string;
+    id: number;
+    date: string;
+  }) => void;
+  setWriteNote: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const WriteANoteScreen = ({ setPressed, addNote }: Props) => {
+const WriteANoteScreen = ({ addNote, setWriteNote }: Props) => {
   const [title, setTitle] = useState<string>("");
   const [note, setNote] = useState<string>("");
+  const actualDate = new Date();
+  const formatDate = format(actualDate, "d MMM", { locale: es });
 
   const handleSave = () => {
     if (!title.trim() || !note.trim()) {
@@ -22,13 +30,14 @@ const WriteANoteScreen = ({ setPressed, addNote }: Props) => {
       title: title,
       note: note,
       id: Date.now(),
+      date: formatDate,
     };
     addNote(newNote);
-    setPressed(false);
+    setWriteNote(false);
   };
 
   const handleCancel = () => {
-    setPressed(false);
+    setWriteNote(false);
   };
 
   return (
@@ -40,19 +49,21 @@ const WriteANoteScreen = ({ setPressed, addNote }: Props) => {
       w={"100%"}
       br={20}
       pos={"absolute"}
-      top={0}
+      top={"10%"}
       style={styles.containerShadow}
+      zIndex={1000}
     >
       <YStack mx={32} mt={36} f={1}>
         <XStack jc={"space-between"}>
           <Input
+            multiline
             backgroundColor="$colorTransparent"
             borderWidth={0}
             placeholder="Titulo.."
             fontSize={27}
             fontWeight={"bold"}
             h={"auto"}
-            w={"auto"}
+            w={"60%"}
             color={"#4F4F4F"}
             value={title}
             onChangeText={(text) => setTitle(text)}
@@ -82,9 +93,14 @@ const WriteANoteScreen = ({ setPressed, addNote }: Props) => {
         <View style={styles.line} />
 
         <View f={1}>
-          <TextInput
-            style={styles.textArea}
+          <TextArea
             multiline
+            fontSize={18}
+            bg={"$colorTransparent"}
+            bw={"$0"}
+            w={"100%"}
+            numberOfLines={8}
+            lineHeight={"$5"}
             placeholder="Escribe tu nota aquí..."
             placeholderTextColor="#A8A8A8"
             value={note}
@@ -112,7 +128,7 @@ const styles = StyleSheet.create({
     boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.4)",
   },
   line: {
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     borderBottomColor: "#D1D1D1",
     marginVertical: 10,
   },

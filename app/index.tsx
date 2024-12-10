@@ -3,22 +3,25 @@ import React, { useState } from "react";
 import { Settings } from "@tamagui/lucide-icons";
 
 //Screens
-import ButtonsAdd from "./ButtonsAdd";
-import NotesComponent from "./NotesComponent";
-import WriteANoteScreen from "./WriteANoteScreen";
+import ButtonsAdd from "../components/ButtonsAdd";
+import NotesComponent from "../components/NotesComponent";
+import WriteANoteScreen from "../components/WriteANoteScreen";
+//Context
+import { useNotes } from "../context/NotesProvider";
 
-interface notesBody {
+interface Note {
   title: string;
-  note: string;
-  id: number;
+  content: string;
+  id: string;
   date: string;
 }
 
 const HomeScreen = () => {
-  const [notes, setNotes] = useState<notesBody[]>([]);
+  const { notes, setNotes } = useNotes();
+
   const [writeNote, setWriteNote] = useState<boolean>(false);
 
-  const addNote = (newNote: notesBody) => {
+  const addNote = (newNote: Note) => {
     setNotes([...notes, newNote]);
   };
 
@@ -52,7 +55,7 @@ const HomeScreen = () => {
           </Text>
         </View>
       ) : (
-        <NotesComponent notes={notes} setNotes={setNotes} />
+        <NotesComponent />
       )}
 
       <ButtonsAdd setWriteNote={setWriteNote} />

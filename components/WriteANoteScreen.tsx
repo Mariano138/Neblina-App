@@ -1,15 +1,16 @@
 import { View, Input, XStack, Button, YStack, TextArea } from "tamagui";
-import { TextInput, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import { StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
 import { Save, Trash } from "@tamagui/lucide-icons";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { nanoid } from "nanoid/non-secure";
 
 type Props = {
   addNote: (note: {
     title: string;
-    note: string;
-    id: number;
+    content: string;
+    id: string;
     date: string;
   }) => void;
   setWriteNote: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,18 +19,28 @@ type Props = {
 const WriteANoteScreen = ({ addNote, setWriteNote }: Props) => {
   const [title, setTitle] = useState<string>("");
   const [note, setNote] = useState<string>("");
+
   const actualDate = new Date();
   const formatDate = format(actualDate, "d MMM", { locale: es });
 
+  useEffect(() => {
+    if (note.trim()) {
+      const firstLine = note.split("\n")[0];
+      const truncatedLine =
+        firstLine.length > 15 ? firstLine.slice(0, 15) + "..." : firstLine;
+      setTitle(truncatedLine);
+    }
+  }, [note]);
+
   const handleSave = () => {
-    if (!title.trim() || !note.trim()) {
-      alert("Por favor, completa todos los campos antes de guardar.");
+    if (!note.trim()) {
+      alert("El contenido de la nota no puede estar vacío.");
       return;
     }
     const newNote = {
       title: title,
-      note: note,
-      id: Date.now(),
+      content: note,
+      id: nanoid(),
       date: formatDate,
     };
     addNote(newNote);
@@ -45,7 +56,6 @@ const WriteANoteScreen = ({ addNote, setWriteNote }: Props) => {
       f={1}
       bg={"#FFF6E5"}
       minHeight={"408"}
-      h={"auto"}
       w={"100%"}
       br={20}
       pos={"absolute"}
@@ -57,15 +67,17 @@ const WriteANoteScreen = ({ addNote, setWriteNote }: Props) => {
         <XStack jc={"space-between"}>
           <Input
             multiline
+            maxLength={30}
             backgroundColor="$colorTransparent"
             borderWidth={0}
-            placeholder="Titulo.."
+            placeholder="Título.."
             fontSize={27}
             fontWeight={"bold"}
             h={"auto"}
             w={"60%"}
             color={"#4F4F4F"}
-            value={title}
+            focusable={false}
+            value={"Nota"}
             onChangeText={(text) => setTitle(text)}
           />
 

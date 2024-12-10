@@ -2,26 +2,27 @@ import { View, Text, Button, XStack } from "tamagui";
 import React from "react";
 import { StyleSheet } from "react-native";
 import { Trash } from "@tamagui/lucide-icons";
+import { useNotes } from "../context/NotesProvider";
 
-type note = {
+type Note = {
   title: string;
-  note: string;
-  id: number;
+  content: string;
+  id: string;
   date: string;
 };
 
 type Props = {
   item: {
     title: string;
-    note: string;
-    id: number;
+    content: string;
+    id: string;
     date: string;
   };
-  notes: note[];
-  setNotes: React.Dispatch<React.SetStateAction<note[]>>;
 };
 
-const Note = ({ item, setNotes, notes }: Props) => {
+const Note = ({ item }: Props) => {
+  const { notes, setNotes } = useNotes();
+
   const handleDelete = () => {
     setNotes(notes.filter((note) => note.id !== item.id));
   };
@@ -47,7 +48,7 @@ const Note = ({ item, setNotes, notes }: Props) => {
         lineHeight={"$4"}
         mr={30}
       >
-        {item.note}
+        {item.content}
       </Text>
       <XStack f={1} jc={"space-between"} ai={"flex-end"} mb={17} mr={38}>
         <Text fontSize={"$1"} fontFamily={"$body"} fontWeight={"$1"}>

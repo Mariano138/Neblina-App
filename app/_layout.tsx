@@ -1,10 +1,9 @@
 import { TamaguiProvider, View } from "tamagui";
-
-import config from "./tamagui.config";
-import HomeScreen from "./components/HomeScreen";
+import config from "../tamagui.config";
 
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { Slot } from "expo-router";
 import {
   useFonts,
   Montserrat_100Thin,
@@ -26,8 +25,9 @@ import {
   Montserrat_800ExtraBold_Italic,
   Montserrat_900Black_Italic,
 } from "@expo-google-fonts/montserrat";
+import { NotesProvider } from "../context/NotesProvider";
 
-export default function App() {
+export default function Layout() {
   const [loaded] = useFonts({
     Montserrat_100Thin,
     Montserrat_200ExtraLight,
@@ -48,6 +48,7 @@ export default function App() {
     Montserrat_800ExtraBold_Italic,
     Montserrat_900Black_Italic,
   });
+
   useEffect(() => {
     if (loaded) {
     }
@@ -59,10 +60,12 @@ export default function App() {
 
   return (
     <TamaguiProvider config={config}>
-      <StatusBar style="auto" />
-      <View f={1} bg={"#F9F9F9"}>
-        <HomeScreen />
-      </View>
+      <NotesProvider>
+        <StatusBar style="auto" />
+        <View f={1} bg={"#F9F9F9"}>
+          <Slot />
+        </View>
+      </NotesProvider>
     </TamaguiProvider>
   );
 }

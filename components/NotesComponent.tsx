@@ -1,33 +1,36 @@
 import React from "react";
-import { FlatList, StyleSheet } from "react-native";
+import { FlatList, StyleSheet, Pressable } from "react-native";
 import Note from "./Note";
 import { View } from "tamagui";
+import { useRouter } from "expo-router";
+import { useNotes } from "../context/NotesProvider";
 
-type note = {
+//To-Do change NotesBody to => Notes
+type NoteBody = {
   title: string;
-  note: string;
-  id: number;
+  content: string;
+  id: string;
   date: string;
 };
 
-type Props = {
-  notes: note[];
-  setNotes: React.Dispatch<React.SetStateAction<note[]>>;
-};
+const NotesComponent = () => {
+  const { notes } = useNotes();
 
-const NotesComponent = ({ notes, setNotes }: Props) => {
-  const renderItem = ({ item }: { item: note }) => {
+  const router = useRouter();
+  const renderItem = ({ item }: { item: NoteBody }) => {
     return (
-      <View
-        mt={38}
-        style={styles.containerShadow}
-        w={340}
-        h={258}
-        bg={"#E4F0FF"}
-        br={25}
-      >
-        <Note item={item} setNotes={setNotes} notes={notes} />
-      </View>
+      <Pressable onPress={() => router.push(`/${item.id}`)}>
+        <View
+          mt={38}
+          style={styles.containerShadow}
+          w={340}
+          h={258}
+          bg={"#E4F0FF"}
+          br={25}
+        >
+          <Note item={item} />
+        </View>
+      </Pressable>
     );
   };
 

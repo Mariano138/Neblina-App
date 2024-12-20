@@ -3,17 +3,75 @@ import React, { useEffect, useState } from "react";
 import { useNotes } from "../context/NotesProvider";
 import { router, useLocalSearchParams } from "expo-router";
 import { Save, Trash } from "@tamagui/lucide-icons";
-import { StyleSheet } from "react-native";
+import {
+  AppState,
+  AppStateStatus,
+  BackHandler,
+  StyleSheet,
+} from "react-native";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Note() {
   const { notes, setNotes } = useNotes();
   const { id } = useLocalSearchParams();
   const [note, setNote] = useState(notes.find((n) => String(n.id) == id));
+  const [appState, setAppState] = useState(AppState.currentState);
 
   const actualDate = new Date();
   const formatDate = format(actualDate, "d MMM", { locale: es });
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener(
+      "change",
+      handleAppStateChange
+    );
+
+    return () => subscription.remove();
+  }, [appState, note]);
+
+  const handleAppStateChange = (nextAppState: AppStateStatus) => {
+    if (appState === "active" && nextAppState.match(/inactive|background/)) {
+      if (!note) {
+        return;
+      }
+      try {
+        const updatedNotes = notes.map((n) => (n.id === note.id ? note : n));
+        AsyncStorage.setItem("notes-key", JSON.stringify(updatedNotes));
+        setNotes(updatedNotes);
+        router.push("/");
+        return true;
+      } catch (e) {
+        console.error("No se pudo guardar la nota." + e);
+      }
+    }
+    setAppState(nextAppState);
+  };
+
+  useEffect(() => {
+    const backAction = () => {
+      if (!note) {
+        return;
+      }
+      try {
+        const updatedNotes = notes.map((n) => (n.id === note.id ? note : n));
+        AsyncStorage.setItem("notes-key", JSON.stringify(updatedNotes));
+        setNotes(updatedNotes);
+        router.push("/");
+        return true;
+      } catch (e) {
+        console.error("No se pudo guardar la nota." + e);
+      }
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [note]);
 
   useEffect(() => {
     if (!note) {
@@ -32,14 +90,26 @@ export default function Note() {
     );
   }
 
-  const handleDelete = () => {
-    setNotes(notes.filter((n) => String(n.id) !== id));
-    router.push("/");
+  const handleDelete = async () => {
+    try {
+      const updatedNotes = notes.filter((n) => String(n.id) !== id);
+      AsyncStorage.setItem("notes-key", JSON.stringify(updatedNotes));
+      setNotes(updatedNotes);
+      router.push("/");
+    } catch (e) {
+      console.error("Error al eliminar la nota." + e);
+    }
   };
 
-  const handleSave = () => {
-    setNotes((prev) => prev.map((n) => (n.id === note.id ? note : n)));
-    router.push("/");
+  const handleSave = async () => {
+    try {
+      const updatedNotes = notes.map((n) => (n.id === note.id ? note : n));
+      AsyncStorage.setItem("notes-key", JSON.stringify(updatedNotes));
+      setNotes(updatedNotes);
+      router.push("/");
+    } catch (e) {
+      console.error("Ocurrio un erro al guardar la nota. " + e);
+    }
   };
 
   return (
@@ -96,10 +166,12 @@ export default function Note() {
       <View style={styles.line} />
 
       <Input
+        f={1}
         value={note.content}
         onChangeText={(text) => setNote({ ...note, content: text })}
         placeholder="Escribe aquí el contenido de tu nota..."
         multiline
+        verticalAlign={"top"}
         mx={30}
         fontSize={19}
         fontWeight={"$3"}

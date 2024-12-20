@@ -3,6 +3,7 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import { Trash } from "@tamagui/lucide-icons";
 import { useNotes } from "../context/NotesProvider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Note = {
   title: string;
@@ -12,19 +13,20 @@ type Note = {
 };
 
 type Props = {
-  item: {
-    title: string;
-    content: string;
-    id: string;
-    date: string;
-  };
+  item: Note;
 };
 
 const Note = ({ item }: Props) => {
   const { notes, setNotes } = useNotes();
 
-  const handleDelete = () => {
-    setNotes(notes.filter((note) => note.id !== item.id));
+  const handleDelete = async () => {
+    try {
+      const updatedNotes = notes.filter((note) => note.id !== item.id);
+      await AsyncStorage.setItem("notes-key", JSON.stringify(updatedNotes));
+      setNotes(updatedNotes);
+    } catch (e) {
+      console.error("Ocurrió un error al eliminar la nota. " + e);
+    }
   };
 
   return (

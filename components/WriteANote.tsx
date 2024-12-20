@@ -1,4 +1,4 @@
-import { View, Input, XStack, Button, YStack, TextArea } from "tamagui";
+import { View, Text, XStack, Button, YStack, TextArea } from "tamagui";
 import { StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Save, Trash } from "@tamagui/lucide-icons";
@@ -16,7 +16,7 @@ type Props = {
   setWriteNote: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const WriteANoteScreen = ({ addNote, setWriteNote }: Props) => {
+const WriteANote = ({ addNote, setWriteNote }: Props) => {
   const [title, setTitle] = useState<string>("");
   const [note, setNote] = useState<string>("");
 
@@ -59,13 +59,14 @@ const WriteANoteScreen = ({ addNote, setWriteNote }: Props) => {
       w={"100%"}
       br={20}
       pos={"absolute"}
+      left={"30"}
       top={"10%"}
       style={styles.containerShadow}
       zIndex={1000}
     >
       <YStack mx={32} mt={36} f={1}>
         <XStack jc={"space-between"}>
-          <Input
+          {/* <Input
             multiline
             maxLength={30}
             backgroundColor="$colorTransparent"
@@ -79,7 +80,12 @@ const WriteANoteScreen = ({ addNote, setWriteNote }: Props) => {
             focusable={false}
             value={"Nota"}
             onChangeText={(text) => setTitle(text)}
-          />
+          /> */}
+          <View jc={"center"}>
+            <Text fontSize={27} fontWeight={"$7"} color={"#4F4F4F"}>
+              Nota
+            </Text>
+          </View>
 
           <XStack gap={19}>
             <Button
@@ -106,8 +112,10 @@ const WriteANoteScreen = ({ addNote, setWriteNote }: Props) => {
 
         <View f={1}>
           <TextArea
+            f={1}
             multiline
             fontSize={18}
+            verticalAlign={"top"}
             bg={"$colorTransparent"}
             bw={"$0"}
             w={"100%"}
@@ -146,4 +154,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WriteANoteScreen;
+export default WriteANote;

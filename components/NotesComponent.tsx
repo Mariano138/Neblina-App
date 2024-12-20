@@ -38,7 +38,8 @@ const NotesComponent = () => {
     <FlatList
       data={notes}
       renderItem={renderItem}
-      keyExtractor={(item) => item.id.toString()}
+      keyExtractor={(item) => item.id}
+      showsVerticalScrollIndicator={false}
     />
   );
 };

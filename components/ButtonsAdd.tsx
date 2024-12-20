@@ -17,7 +17,7 @@ const ButtonsAdd = ({ setWriteNote }: Props) => {
   };
 
   return (
-    <XStack f={1} ai={"flex-end"} jc={"space-between"} mb={15}>
+    <XStack f={1} ai={"flex-end"} jc={"space-between"}>
       <Button
         style={styles.buttonShadow}
         bg={"#FFE4E6"}
@@ -39,6 +39,7 @@ const ButtonsAdd = ({ setWriteNote }: Props) => {
         circular
         icon={PencilLine}
         style={styles.buttonShadow}
+        mb={15}
       />
     </XStack>
   );

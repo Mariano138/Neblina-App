@@ -1,53 +1,19 @@
 import { View, Text, XStack, Button } from "tamagui";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Settings } from "@tamagui/lucide-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BlurView } from "expo-blur"; // Importa BlurView
-
+import { BlurView } from "expo-blur";
 //Screens
 import ButtonsAdd from "../components/ButtonsAdd";
 import NotesComponent from "../components/NotesComponent";
 import WriteANote from "../components/WriteANote";
 //Context
 import { useNotes } from "../context/NotesProvider";
-
-interface Note {
-  title: string;
-  content: string;
-  id: string;
-  date: string;
-}
+//Hook
+import useHomeScreen from "../hooks/useHomeScreen";
 
 const HomeScreen = () => {
-  const { notes, setNotes } = useNotes();
-
-  const [writeNote, setWriteNote] = useState<boolean>(false);
-
-  useEffect(() => {
-    const loadNotes = async () => {
-      try {
-        const storedNote = await AsyncStorage.getItem("notes-key");
-        if (storedNote) {
-          setNotes(JSON.parse(storedNote));
-        } else {
-          setNotes([]);
-        }
-      } catch (e) {
-        console.error("Ocurrió un error al cargar las notas. " + e);
-      }
-    };
-    loadNotes();
-  }, []);
-
-  const addNote = async (newNote: Note) => {
-    try {
-      const updatedNotes = [...notes, newNote];
-      await AsyncStorage.setItem("notes-key", JSON.stringify(updatedNotes));
-      setNotes(updatedNotes);
-    } catch (e) {
-      console.error("Ocurrió un error al guardar las notas " + e);
-    }
-  };
+  const { notes } = useNotes();
+  const { addNote, writeNote, setWriteNote } = useHomeScreen();
 
   return (
     <View f={1} pt={"30"} px={"30"}>

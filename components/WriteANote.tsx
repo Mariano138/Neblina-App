@@ -1,10 +1,7 @@
 import { View, Text, XStack, Button, YStack, TextArea } from "tamagui";
 import { StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
 import { Save, Trash } from "@tamagui/lucide-icons";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import { nanoid } from "nanoid/non-secure";
+import useWriteANote from "../hooks/useWriteANote";
 
 type Props = {
   addNote: (note: {
@@ -17,39 +14,10 @@ type Props = {
 };
 
 const WriteANote = ({ addNote, setWriteNote }: Props) => {
-  const [title, setTitle] = useState<string>("");
-  const [note, setNote] = useState<string>("");
-
-  const actualDate = new Date();
-  const formatDate = format(actualDate, "d MMM", { locale: es });
-
-  useEffect(() => {
-    if (note.trim()) {
-      const firstLine = note.split("\n")[0];
-      const truncatedLine =
-        firstLine.length > 15 ? firstLine.slice(0, 15) + "..." : firstLine;
-      setTitle(truncatedLine);
-    }
-  }, [note]);
-
-  const handleSave = () => {
-    if (!note.trim()) {
-      alert("El contenido de la nota no puede estar vacío.");
-      return;
-    }
-    const newNote = {
-      title: title,
-      content: note,
-      id: nanoid(),
-      date: formatDate,
-    };
-    addNote(newNote);
-    setWriteNote(false);
-  };
-
-  const handleCancel = () => {
-    setWriteNote(false);
-  };
+  const { handleSave, handleCancel, note, setNote } = useWriteANote({
+    addNote,
+    setWriteNote,
+  });
 
   return (
     <View

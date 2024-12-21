@@ -1,86 +1,14 @@
 import { Text, View, XStack, YStack, Button, Input } from "tamagui";
-import React, { useEffect, useState } from "react";
-import { useNotes } from "../context/NotesProvider";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { Save, Trash } from "@tamagui/lucide-icons";
-import {
-  AppState,
-  AppStateStatus,
-  BackHandler,
-  StyleSheet,
-} from "react-native";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import useNote from "../hooks/useNote";
+import { StyleSheet } from "react-native";
 
 export default function Note() {
-  const { notes, setNotes } = useNotes();
   const { id } = useLocalSearchParams();
-  const [note, setNote] = useState(notes.find((n) => String(n.id) == id));
-  const [appState, setAppState] = useState(AppState.currentState);
+  const noteData = useNote({ id });
 
-  const actualDate = new Date();
-  const formatDate = format(actualDate, "d MMM", { locale: es });
-
-  useEffect(() => {
-    const subscription = AppState.addEventListener(
-      "change",
-      handleAppStateChange
-    );
-
-    return () => subscription.remove();
-  }, [appState, note]);
-
-  const handleAppStateChange = (nextAppState: AppStateStatus) => {
-    if (appState === "active" && nextAppState.match(/inactive|background/)) {
-      if (!note) {
-        return;
-      }
-      try {
-        const updatedNotes = notes.map((n) => (n.id === note.id ? note : n));
-        AsyncStorage.setItem("notes-key", JSON.stringify(updatedNotes));
-        setNotes(updatedNotes);
-        router.push("/");
-        return true;
-      } catch (e) {
-        console.error("No se pudo guardar la nota." + e);
-      }
-    }
-    setAppState(nextAppState);
-  };
-
-  useEffect(() => {
-    const backAction = () => {
-      if (!note) {
-        return;
-      }
-      try {
-        const updatedNotes = notes.map((n) => (n.id === note.id ? note : n));
-        AsyncStorage.setItem("notes-key", JSON.stringify(updatedNotes));
-        setNotes(updatedNotes);
-        router.push("/");
-        return true;
-      } catch (e) {
-        console.error("No se pudo guardar la nota." + e);
-      }
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    return () => backHandler.remove();
-  }, [note]);
-
-  useEffect(() => {
-    if (!note) {
-      const foundNote = notes.find((n) => String(n.id) == id);
-      setNote(foundNote);
-    }
-  }, [notes, id]);
-
-  if (!note) {
+  if (!noteData) {
     return (
       <View f={1} jc={"center"}>
         <Text color={"#A0A0A0"} fontSize={"$1"} ta={"center"}>
@@ -90,27 +18,7 @@ export default function Note() {
     );
   }
 
-  const handleDelete = async () => {
-    try {
-      const updatedNotes = notes.filter((n) => String(n.id) !== id);
-      AsyncStorage.setItem("notes-key", JSON.stringify(updatedNotes));
-      setNotes(updatedNotes);
-      router.push("/");
-    } catch (e) {
-      console.error("Error al eliminar la nota." + e);
-    }
-  };
-
-  const handleSave = async () => {
-    try {
-      const updatedNotes = notes.map((n) => (n.id === note.id ? note : n));
-      AsyncStorage.setItem("notes-key", JSON.stringify(updatedNotes));
-      setNotes(updatedNotes);
-      router.push("/");
-    } catch (e) {
-      console.error("Ocurrio un erro al guardar la nota. " + e);
-    }
-  };
+  const { handleSave, handleDelete, formattedDate, note, setNote } = noteData;
 
   return (
     <YStack f={1} bg={"#E4F0FF"}>
@@ -160,7 +68,7 @@ export default function Note() {
       </XStack>
 
       <Text mt={13} ml={30} fontSize={15} fontWeight={"$2"}>
-        Editado: {formatDate}
+        Editado: {formattedDate}
       </Text>
 
       <View style={styles.line} />

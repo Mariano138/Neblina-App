@@ -15,8 +15,8 @@ type NoteBody = {
 
 const NotesComponent = () => {
   const { notes } = useNotes();
-
   const router = useRouter();
+
   const renderItem = ({ item }: { item: NoteBody }) => {
     return (
       <Pressable onPress={() => router.push(`/${item.id}`)}>

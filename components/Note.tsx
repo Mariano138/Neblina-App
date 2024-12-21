@@ -2,8 +2,7 @@ import { View, Text, Button, XStack } from "tamagui";
 import React from "react";
 import { StyleSheet } from "react-native";
 import { Trash } from "@tamagui/lucide-icons";
-import { useNotes } from "../context/NotesProvider";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import useItem from "../hooks/useItem";
 
 type Note = {
   title: string;
@@ -17,17 +16,17 @@ type Props = {
 };
 
 const Note = ({ item }: Props) => {
-  const { notes, setNotes } = useNotes();
+  const useNoteResult = useItem({ item });
 
-  const handleDelete = async () => {
-    try {
-      const updatedNotes = notes.filter((note) => note.id !== item.id);
-      await AsyncStorage.setItem("notes-key", JSON.stringify(updatedNotes));
-      setNotes(updatedNotes);
-    } catch (e) {
-      console.error("Ocurrió un error al eliminar la nota. " + e);
-    }
-  };
+  if (!useNoteResult) {
+    return (
+      <View f={1} jc={"center"}>
+        <Text ta={"center"}>Nota no encontrada</Text>
+      </View>
+    );
+  }
+
+  const { handleDeleteItem } = useNoteResult;
 
   return (
     <View f={1} pt={30} pl={30}>
@@ -63,7 +62,7 @@ const Note = ({ item }: Props) => {
           circular
           icon={Trash}
           style={styles.buttonShadow}
-          onPress={handleDelete}
+          onPress={handleDeleteItem}
         />
       </XStack>
     </View>

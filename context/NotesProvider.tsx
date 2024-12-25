@@ -5,6 +5,7 @@ interface Note {
   content: string;
   id: string;
   date: string;
+  color: string;
 }
 
 interface NotesContextProp {

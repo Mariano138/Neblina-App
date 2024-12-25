@@ -8,6 +8,7 @@ type Props = {
     content: string;
     id: string;
     date: string;
+    color: string;
   }) => void;
   setWriteNote: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -15,6 +16,9 @@ type Props = {
 export default function useWriteANote({ addNote, setWriteNote }: Props) {
   const [title, setTitle] = useState<string>("");
   const [note, setNote] = useState<string>("");
+  const pastelColors = ["#E4F0FF", "#FFE4E6", "#D9F7FF", "#FFF4E4", "#E4FFE4"];
+  const randomColor =
+    pastelColors[Math.floor(Math.random() * pastelColors.length)];
 
   const formattedDate = formatDate();
 
@@ -37,6 +41,7 @@ export default function useWriteANote({ addNote, setWriteNote }: Props) {
       content: note,
       id: nanoid(),
       date: formattedDate,
+      color: randomColor,
     };
     addNote(newNote);
     setWriteNote(false);

@@ -21,7 +21,7 @@ export default function Note() {
   const { handleSave, handleDelete, formattedDate, note, setNote } = noteData;
 
   return (
-    <YStack f={1} bg={"#E4F0FF"}>
+    <YStack f={1} bg={note.color}>
       <XStack jc={"flex-end"} mt={44} mr={34} gap={18}>
         <Button
           style={styles.buttonShadow}

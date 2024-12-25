@@ -11,6 +11,7 @@ type NoteBody = {
   content: string;
   id: string;
   date: string;
+  color: string;
 };
 
 const NotesComponent = () => {
@@ -25,7 +26,7 @@ const NotesComponent = () => {
           style={styles.containerShadow}
           w={340}
           h={258}
-          bg={"#E4F0FF"}
+          bg={item.color}
           br={25}
         >
           <Note item={item} />

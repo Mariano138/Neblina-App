@@ -1,4 +1,3 @@
-import React from "react";
 import { useNotes } from "../context/NotesProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -7,6 +6,7 @@ type Note = {
   content: string;
   id: string;
   date: string;
+  color: string;
 };
 
 type Props = {

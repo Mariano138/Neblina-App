@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNotes } from "../context/NotesProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -7,6 +7,7 @@ interface Note {
   content: string;
   id: string;
   date: string;
+  color: string;
 }
 
 export default function useHomeScreen() {
@@ -38,6 +39,7 @@ export default function useHomeScreen() {
       console.error("Ocurrió un error al guardar las notas " + e);
     }
   };
+
   return {
     addNote,
     writeNote,

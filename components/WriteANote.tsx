@@ -9,6 +9,7 @@ type Props = {
     content: string;
     id: string;
     date: string;
+    color: string;
   }) => void;
   setWriteNote: React.Dispatch<React.SetStateAction<boolean>>;
 };

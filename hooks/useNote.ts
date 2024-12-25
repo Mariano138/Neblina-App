@@ -14,6 +14,7 @@ type Note = {
   title: string;
   content: string;
   date: string;
+  color: string;
 };
 
 type useNoteReturn = {
@@ -28,8 +29,9 @@ export default function useNote({ id }: Props): useNoteReturn | undefined {
   const { notes, setNotes } = useNotes();
   const [note, setNote] = useState(notes.find((n) => String(n.id) == id));
   const [appState, setAppState] = useState(AppState.currentState);
-
   const formattedDate = formatDate();
+
+  // Save note if app minimize
 
   useEffect(() => {
     const subscription = AppState.addEventListener(
@@ -45,33 +47,20 @@ export default function useNote({ id }: Props): useNoteReturn | undefined {
       if (!note) {
         return;
       }
-      try {
-        const updatedNotes = notes.map((n) => (n.id === note.id ? note : n));
-        AsyncStorage.setItem("notes-key", JSON.stringify(updatedNotes));
-        setNotes(updatedNotes);
-        router.push("/");
-        return true;
-      } catch (e) {
-        console.error("No se pudo guardar la nota." + e);
-      }
+      handleSave();
     }
     setAppState(nextAppState);
   };
 
+  //Save Note if backGesture
+
   useEffect(() => {
     const backAction = () => {
       if (!note) {
-        return;
+        return false;
       }
-      try {
-        const updatedNotes = notes.map((n) => (n.id === note.id ? note : n));
-        AsyncStorage.setItem("notes-key", JSON.stringify(updatedNotes));
-        setNotes(updatedNotes);
-        router.push("/");
-        return true;
-      } catch (e) {
-        console.error("No se pudo guardar la nota." + e);
-      }
+      handleSave();
+      return true;
     };
 
     const backHandler = BackHandler.addEventListener(
@@ -82,6 +71,8 @@ export default function useNote({ id }: Props): useNoteReturn | undefined {
     return () => backHandler.remove();
   }, [note]);
 
+  //Handle the case if there is not a note
+
   useEffect(() => {
     if (!note) {
       const foundNote = notes.find((n) => String(n.id) == id);
@@ -91,16 +82,7 @@ export default function useNote({ id }: Props): useNoteReturn | undefined {
 
   if (!note) return undefined;
 
-  const handleDelete = async () => {
-    try {
-      const updatedNotes = notes.filter((n) => String(n.id) !== id);
-      AsyncStorage.setItem("notes-key", JSON.stringify(updatedNotes));
-      setNotes(updatedNotes);
-      router.push("/");
-    } catch (e) {
-      console.error("Error al eliminar la nota." + e);
-    }
-  };
+  //Handle the save of a note
 
   const handleSave = async () => {
     try {
@@ -110,6 +92,19 @@ export default function useNote({ id }: Props): useNoteReturn | undefined {
       router.push("/");
     } catch (e) {
       console.error("Ocurrio un erro al guardar la nota. " + e);
+    }
+  };
+
+  //Handle the delete of a note
+
+  const handleDelete = async () => {
+    try {
+      const updatedNotes = notes.filter((n) => String(n.id) !== id);
+      AsyncStorage.setItem("notes-key", JSON.stringify(updatedNotes));
+      setNotes(updatedNotes);
+      router.push("/");
+    } catch (e) {
+      console.error("Error al eliminar la nota." + e);
     }
   };
 

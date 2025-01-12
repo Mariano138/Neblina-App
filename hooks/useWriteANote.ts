@@ -3,7 +3,7 @@ import { nanoid } from "nanoid/non-secure";
 import formatDate from "./helpers/FormatDate";
 
 type Props = {
-  addNote: (note: {
+  addNote?: (note: {
     title: string;
     content: string;
     id: string;
@@ -16,12 +16,16 @@ type Props = {
 export default function useWriteANote({ addNote, setWriteNote }: Props) {
   const [title, setTitle] = useState<string>("");
   const [note, setNote] = useState<string>("");
+
+  //Generate random pastel color
   const pastelColors = ["#E4F0FF", "#FFE4E6", "#D9F7FF", "#FFF4E4", "#E4FFE4"];
   const randomColor =
     pastelColors[Math.floor(Math.random() * pastelColors.length)];
 
+  //Generate Date
   const formattedDate = formatDate();
 
+  //Generate a title with first letters of note
   useEffect(() => {
     if (note.trim()) {
       const firstLine = note.split("\n")[0];
@@ -31,11 +35,14 @@ export default function useWriteANote({ addNote, setWriteNote }: Props) {
     }
   }, [note]);
 
-  const handleSave = () => {
+  //Logic to save a note
+  const handleSave = (triggerExitAnimation: () => void) => {
     if (!note.trim()) {
-      alert("El contenido de la nota no puede estar vacío.");
+      triggerExitAnimation();
+      setTimeout(() => setWriteNote(false), 300);
       return;
     }
+
     const newNote = {
       title: title,
       content: note,
@@ -43,12 +50,26 @@ export default function useWriteANote({ addNote, setWriteNote }: Props) {
       date: formattedDate,
       color: randomColor,
     };
-    addNote(newNote);
-    setWriteNote(false);
+
+    if (addNote) {
+      addNote(newNote);
+    }
+
+    triggerExitAnimation();
+    setTimeout(() => setWriteNote(false), 300);
   };
 
-  const handleCancel = () => {
-    setWriteNote(false);
+  //Logic to handle cancel/delete button press
+
+  const handleCancel = (triggerExitAnimation: () => void) => {
+    triggerExitAnimation();
+    setTimeout(() => setWriteNote(false), 300);
+  };
+
+  //Handle WriteANote appear in screen
+
+  const handleAddNote = () => {
+    setWriteNote(true);
   };
 
   return {
@@ -56,5 +77,6 @@ export default function useWriteANote({ addNote, setWriteNote }: Props) {
     handleCancel,
     note,
     setNote,
+    handleAddNote,
   };
 }

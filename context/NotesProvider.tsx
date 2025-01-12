@@ -13,6 +13,8 @@ interface NotesContextProp {
   setNotes: React.Dispatch<React.SetStateAction<Note[]>>;
 }
 
+//This is context of the array where all notes get stored
+
 const NotesContext = createContext<NotesContextProp | undefined>(undefined);
 
 export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({

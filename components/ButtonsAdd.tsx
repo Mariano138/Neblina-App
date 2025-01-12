@@ -6,15 +6,17 @@ import {
 } from "@tamagui/lucide-icons";
 import React from "react";
 import { StyleSheet } from "react-native";
+import { GestureDetector } from "react-native-gesture-handler";
+import useWriteANote from "../hooks/useWriteANote";
+import useAnimations from "../hooks/useAnimations";
 
 type Props = {
   setWriteNote: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const ButtonsAdd = ({ setWriteNote }: Props) => {
-  const handleAddNote = () => {
-    setWriteNote(true);
-  };
+  const { handleAddNote } = useWriteANote({ setWriteNote });
+  const { AnimatedButton, tapAdd, animatedButtonAddStyle } = useAnimations();
 
   return (
     <XStack f={1} ai={"flex-end"} jc={"space-between"}>
@@ -32,15 +34,16 @@ const ButtonsAdd = ({ setWriteNote }: Props) => {
         circular
         icon={Calendar}
       />
-      <Button
-        onPress={handleAddNote}
-        bg={"#E4F0FF"}
-        size={54}
-        circular
-        icon={PencilLine}
-        style={styles.buttonShadow}
-        mb={15}
-      />
+      <GestureDetector gesture={tapAdd}>
+        <AnimatedButton
+          onPress={handleAddNote}
+          size={54}
+          circular
+          icon={PencilLine}
+          style={[styles.buttonShadow, animatedButtonAddStyle]}
+          mb={15}
+        />
+      </GestureDetector>
     </XStack>
   );
 };

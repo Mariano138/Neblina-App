@@ -82,7 +82,7 @@ export default function useNote({ id }: Props): useNoteReturn | undefined {
 
   if (!note) return undefined;
 
-  //Handle the save of a note
+  //Handle the save of a note(inside [id])
 
   const handleSave = async () => {
     try {
@@ -95,7 +95,7 @@ export default function useNote({ id }: Props): useNoteReturn | undefined {
     }
   };
 
-  //Handle the delete of a note
+  //Handle the delete of a note(inside [id])
 
   const handleDelete = async () => {
     try {

@@ -1,8 +1,10 @@
-import { View, Text, Button, XStack } from "tamagui";
+import { View, Text, XStack } from "tamagui";
 import React from "react";
 import { StyleSheet } from "react-native";
 import { Trash } from "@tamagui/lucide-icons";
 import useItem from "../hooks/useItem";
+import useAnimations from "../hooks/useAnimations";
+import { GestureDetector } from "react-native-gesture-handler";
 
 type Note = {
   title: string;
@@ -18,6 +20,8 @@ type Props = {
 
 const Note = ({ item }: Props) => {
   const useNoteResult = useItem({ item });
+  const { AnimatedButton, tapDelete, animatedButtonDeleteStyle } =
+    useAnimations();
 
   if (!useNoteResult) {
     return (
@@ -56,15 +60,17 @@ const Note = ({ item }: Props) => {
         <Text fontSize={"$1"} fontFamily={"$body"} fontWeight={"$1"}>
           {item.date}
         </Text>
-        <Button
-          size={42}
-          color={"#757575"}
-          bg={"#FFC4C4"}
-          circular
-          icon={Trash}
-          style={styles.buttonShadow}
-          onPress={handleDeleteItem}
-        />
+        <GestureDetector gesture={tapDelete}>
+          <AnimatedButton
+            size={42}
+            color={"#757575"}
+            bg={"#FFC4C4"}
+            circular
+            icon={Trash}
+            style={[styles.buttonShadow, animatedButtonDeleteStyle]}
+            onPress={handleDeleteItem}
+          />
+        </GestureDetector>
       </XStack>
     </View>
   );

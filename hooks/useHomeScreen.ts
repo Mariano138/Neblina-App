@@ -14,6 +14,7 @@ export default function useHomeScreen() {
   const { notes, setNotes } = useNotes();
   const [writeNote, setWriteNote] = useState<boolean>(false);
 
+  // Load the stored notes
   useEffect(() => {
     const loadNotes = async () => {
       try {
@@ -30,6 +31,7 @@ export default function useHomeScreen() {
     loadNotes();
   }, []);
 
+  // Handle the logic of adding a note
   const addNote = async (newNote: Note) => {
     try {
       const updatedNotes = [...notes, newNote];

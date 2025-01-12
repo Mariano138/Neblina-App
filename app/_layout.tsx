@@ -26,6 +26,7 @@ import {
   Montserrat_900Black_Italic,
 } from "@expo-google-fonts/montserrat";
 import { NotesProvider } from "../context/NotesProvider";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function Layout() {
   const [loaded] = useFonts({
@@ -63,7 +64,9 @@ export default function Layout() {
       <NotesProvider>
         <StatusBar style="auto" />
         <View f={1} bg={"#F9F9F9"}>
-          <Slot />
+          <GestureHandlerRootView>
+            <Slot />
+          </GestureHandlerRootView>
         </View>
       </NotesProvider>
     </TamaguiProvider>

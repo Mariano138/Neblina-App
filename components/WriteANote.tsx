@@ -2,6 +2,9 @@ import { View, Text, XStack, Button, YStack, TextArea } from "tamagui";
 import { StyleSheet } from "react-native";
 import { Save, Trash } from "@tamagui/lucide-icons";
 import useWriteANote from "../hooks/useWriteANote";
+import Animated from "react-native-reanimated";
+import useAnimations from "../hooks/useAnimations";
+import { GestureDetector } from "react-native-gesture-handler";
 
 type Props = {
   addNote: (note: {
@@ -20,36 +23,23 @@ const WriteANote = ({ addNote, setWriteNote }: Props) => {
     setWriteNote,
   });
 
+  const {
+    animatedStyled,
+    triggerExitAnimation,
+
+    AnimatedButton,
+
+    tapAdd,
+    tapDelete,
+
+    animatedButtonSaveStyle,
+    animatedButtonDeleteStyle,
+  } = useAnimations();
+
   return (
-    <View
-      f={1}
-      bg={"#FFF6E5"}
-      minHeight={"408"}
-      w={"100%"}
-      br={20}
-      pos={"absolute"}
-      left={"30"}
-      top={"10%"}
-      style={styles.containerShadow}
-      zIndex={1000}
-    >
+    <Animated.View style={[styles.containerShadow, animatedStyled]}>
       <YStack mx={32} mt={36} f={1}>
         <XStack jc={"space-between"}>
-          {/* <Input
-            multiline
-            maxLength={30}
-            backgroundColor="$colorTransparent"
-            borderWidth={0}
-            placeholder="Título.."
-            fontSize={27}
-            fontWeight={"bold"}
-            h={"auto"}
-            w={"60%"}
-            color={"#4F4F4F"}
-            focusable={false}
-            value={"Nota"}
-            onChangeText={(text) => setTitle(text)}
-          /> */}
           <View jc={"center"}>
             <Text fontSize={27} fontWeight={"$7"} color={"#4F4F4F"}>
               Nota
@@ -57,23 +47,26 @@ const WriteANote = ({ addNote, setWriteNote }: Props) => {
           </View>
 
           <XStack gap={19}>
-            <Button
-              style={styles.buttonShadow}
-              bg={"#DFFFE7"}
-              size={42}
-              circular
-              icon={Save}
-              onPress={handleSave}
-            />
-
-            <Button
-              style={styles.buttonShadow}
-              bg={"#FFC4C4"}
-              size={42}
-              circular
-              icon={Trash}
-              onPress={handleCancel}
-            />
+            <GestureDetector gesture={tapAdd}>
+              <AnimatedButton
+                style={[styles.buttonShadow, animatedButtonSaveStyle]}
+                bg={"#DFFFE7"}
+                size={42}
+                circular
+                icon={Save}
+                onPress={() => handleSave(triggerExitAnimation)}
+              />
+            </GestureDetector>
+            <GestureDetector gesture={tapDelete}>
+              <AnimatedButton
+                style={[styles.buttonShadow, animatedButtonDeleteStyle]}
+                bg={"#FFC4C4"}
+                size={42}
+                circular
+                icon={Trash}
+                onPress={() => handleCancel(triggerExitAnimation)}
+              />
+            </GestureDetector>
           </XStack>
         </XStack>
 
@@ -97,7 +90,7 @@ const WriteANote = ({ addNote, setWriteNote }: Props) => {
           />
         </View>
       </YStack>
-    </View>
+    </Animated.View>
   );
 };
 
@@ -110,6 +103,15 @@ const styles = StyleSheet.create({
     color: "#4F4F4F",
   },
   containerShadow: {
+    flex: 1,
+    backgroundColor: "#FFF6E5",
+    minHeight: 408,
+    width: "100%",
+    borderRadius: 20,
+    position: "absolute",
+    left: 30,
+    top: 80,
+    zIndex: 1000,
     boxShadow:
       "10px 15px 4px rgba(0, 0, 0, 0.3), inset 5px 10px 4px rgba(0, 0, 0, 0.2)",
   },

@@ -7,11 +7,12 @@ import Animated, {
   Easing,
   withSpring,
 } from "react-native-reanimated";
+import { Pressable } from "react-native";
 import { Button } from "tamagui";
 
 export default function useAnimations() {
   //Animation of WriteANote appearing in the screen
-  const translateY = useSharedValue<number>(1000);
+  const translateY = useSharedValue<number>(1500);
 
   const animatedStyled = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
@@ -71,6 +72,9 @@ export default function useAnimations() {
     backgroundColor: withTiming(pressedDelete.value ? "#FFA3A3" : "#FFC4C4"),
     transform: [{ scale: withSpring(pressedDelete.value ? 1.2 : 1) }],
   }));
+
+  // Animation on note appear
+  const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
   return {
     AnimatedButton,
 
@@ -84,5 +88,7 @@ export default function useAnimations() {
 
     animatedButtonSaveStyle,
     animatedButtonDeleteStyle,
+
+    AnimatedPressable,
   };
 }

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { nanoid } from "nanoid/non-secure";
 import formatDate from "./helpers/FormatDate";
+import { useRouter } from "expo-router";
 
 type Props = {
   addNote?: (note: {
@@ -10,10 +11,9 @@ type Props = {
     date: string;
     color: string;
   }) => void;
-  setWriteNote: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function useWriteANote({ addNote, setWriteNote }: Props) {
+export default function useWriteANote({ addNote }: Props) {
   const [title, setTitle] = useState<string>("");
   const [note, setNote] = useState<string>("");
 
@@ -26,20 +26,21 @@ export default function useWriteANote({ addNote, setWriteNote }: Props) {
   const formattedDate = formatDate();
 
   //Generate a title with first letters of note
-  useEffect(() => {
-    if (note.trim()) {
-      const firstLine = note.split("\n")[0];
-      const truncatedLine =
-        firstLine.length > 15 ? firstLine.slice(0, 15) + "..." : firstLine;
-      setTitle(truncatedLine);
-    }
-  }, [note]);
+  // useEffect(() => {
+  //   if (title.trim()) {
+  //     const firstLine = note.split("\n")[0];
+  //     const truncatedLine =
+  //       firstLine.length > 15 ? firstLine.slice(0, 15) + "..." : firstLine;
+  //     setTitle(truncatedLine);
+  //   }
+  // }, [note]);
 
   //Logic to save a note
-  const handleSave = (triggerExitAnimation: () => void) => {
+  const router = useRouter();
+
+  const handleSave = () => {
     if (!note.trim()) {
-      triggerExitAnimation();
-      setTimeout(() => setWriteNote(false), 300);
+      router.push(`/`);
       return;
     }
 
@@ -54,29 +55,21 @@ export default function useWriteANote({ addNote, setWriteNote }: Props) {
     if (addNote) {
       addNote(newNote);
     }
-
-    triggerExitAnimation();
-    setTimeout(() => setWriteNote(false), 300);
+    router.push(`/`);
   };
 
   //Logic to handle cancel/delete button press
 
-  const handleCancel = (triggerExitAnimation: () => void) => {
-    triggerExitAnimation();
-    setTimeout(() => setWriteNote(false), 300);
-  };
-
-  //Handle WriteANote appear in screen
-
-  const handleAddNote = () => {
-    setWriteNote(true);
+  const handleCancel = () => {
+    router.push(`/`);
   };
 
   return {
     handleSave,
     handleCancel,
+    title,
+    setTitle,
     note,
     setNote,
-    handleAddNote,
   };
 }

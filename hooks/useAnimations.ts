@@ -75,6 +75,11 @@ export default function useAnimations() {
 
   // Animation on note appear
   const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+  //Animation on hold press note
+  const animatedNotePressStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: withSpring(pressedAdd.value ? 1.1 : 1) }],
+  }));
   return {
     AnimatedButton,
 
@@ -90,5 +95,7 @@ export default function useAnimations() {
     animatedButtonDeleteStyle,
 
     AnimatedPressable,
+
+    animatedNotePressStyle,
   };
 }

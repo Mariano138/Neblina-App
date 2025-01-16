@@ -2,13 +2,7 @@ import { StyleSheet } from "react-native";
 import { View } from "tamagui";
 import { useRouter } from "expo-router";
 import { useNotes } from "../context/NotesProvider";
-import {
-  ZoomOut,
-  ZoomIn,
-  LinearTransition,
-  withTiming,
-  runOnJS,
-} from "react-native-reanimated";
+import { ZoomOut, ZoomIn, LinearTransition } from "react-native-reanimated";
 import Animated from "react-native-reanimated";
 import Note from "./Note";
 import useAnimations from "../hooks/useAnimations";
@@ -30,28 +24,8 @@ const NotesComponent = () => {
   const renderItem = ({ item }: { item: NoteBody }) => {
     return (
       <AnimatedPressable
-        entering={ZoomIn.withCallback((finished) => {
-          if (finished) {
-            console.log(
-              `Animación de entrada completada para la nota: ${item.id}`
-            );
-          } else {
-            console.log(
-              `Animación de entrada interrumpida para la nota: ${item.id}`
-            );
-          }
-        })}
-        exiting={ZoomOut.withCallback((finished) => {
-          if (finished) {
-            console.log(
-              `Animación de salida completada para la nota: ${item.id}`
-            );
-          } else {
-            console.log(
-              `Animación de salida interrumpida para la nota: ${item.id}`
-            );
-          }
-        })}
+        entering={ZoomIn.delay(0)}
+        exiting={ZoomOut}
         onPress={() => router.push(`/${item.id}`)}
       >
         <View

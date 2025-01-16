@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNotes } from "../context/NotesProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -12,7 +12,6 @@ interface Note {
 
 export default function useHomeScreen() {
   const { notes, setNotes } = useNotes();
-  const [writeNote, setWriteNote] = useState<boolean>(false);
 
   // Load the stored notes
   useEffect(() => {
@@ -44,7 +43,5 @@ export default function useHomeScreen() {
 
   return {
     addNote,
-    writeNote,
-    setWriteNote,
   };
 }

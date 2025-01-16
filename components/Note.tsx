@@ -56,6 +56,7 @@ const Note = ({ item }: Props) => {
       >
         {item.content}
       </Text>
+
       <XStack f={1} jc={"space-between"} ai={"flex-end"} mb={17} mr={38}>
         <Text fontSize={"$1"} fontFamily={"$body"} fontWeight={"$1"}>
           {item.date}

@@ -3,7 +3,7 @@ import config from "../tamagui.config";
 
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import { Slot } from "expo-router";
+import { Slot, Stack } from "expo-router";
 import {
   useFonts,
   Montserrat_100Thin,
@@ -65,7 +65,26 @@ export default function Layout() {
         <StatusBar style="auto" />
         <View f={1} bg={"#F9F9F9"}>
           <GestureHandlerRootView>
-            <Slot />
+            <Stack>
+              <Stack.Screen
+                name="index"
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="writeNote"
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="[id]"
+                options={{
+                  headerShown: false,
+                }}
+              />
+            </Stack>
           </GestureHandlerRootView>
         </View>
       </NotesProvider>

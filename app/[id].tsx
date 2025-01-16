@@ -46,7 +46,7 @@ export default function Note() {
         <Input
           value={note.title}
           onChangeText={(text) => setNote({ ...note, title: text })}
-          placeholder="Puedes agregar un titulo aqui."
+          placeholder="Título.."
           multiline
           maxLength={30}
           maxWidth={"$20"}

@@ -1,42 +1,22 @@
-import { Button, XStack } from "tamagui";
-import {
-  MessageCircleWarning,
-  Calendar,
-  PencilLine,
-} from "@tamagui/lucide-icons";
+import { XStack } from "tamagui";
+import { PencilLine } from "@tamagui/lucide-icons";
 import React from "react";
 import { StyleSheet } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
-import useWriteANote from "../hooks/useWriteANote";
 import useAnimations from "../hooks/useAnimations";
+import { useRouter } from "expo-router";
 
-type Props = {
-  setWriteNote: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-const ButtonsAdd = ({ setWriteNote }: Props) => {
-  const { handleAddNote } = useWriteANote({ setWriteNote });
+const ButtonsAdd = () => {
+  const router = useRouter();
   const { AnimatedButton, tapAdd, animatedButtonAddStyle } = useAnimations();
 
   return (
-    <XStack f={1} ai={"flex-end"} jc={"space-between"}>
-      <Button
-        style={styles.buttonShadow}
-        bg={"#FFE4E6"}
-        size={54}
-        circular
-        icon={MessageCircleWarning}
-      />
-      <Button
-        style={styles.buttonShadow}
-        bg={"#D9F7FF"}
-        size={54}
-        circular
-        icon={Calendar}
-      />
+    <XStack f={1} ai={"flex-end"} jc={"flex-end"}>
       <GestureDetector gesture={tapAdd}>
         <AnimatedButton
-          onPress={handleAddNote}
+          onPress={() => {
+            router.push(`/writeNote`);
+          }}
           size={54}
           circular
           icon={PencilLine}

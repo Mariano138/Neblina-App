@@ -1,9 +1,9 @@
-import { View, Text, FlatList } from 'react-native';
-import { drizzle, useLiveQuery } from 'drizzle-orm/expo-sqlite';
+import { View, FlatList } from 'react-native';
+import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { notesTable } from '~/db/schema';
-import { useSQLiteContext } from 'expo-sqlite';
-import Item from './Item';
+import Item from './NotesStructure/Item';
 import { useCallback } from 'react';
+import useDrizzle from '~/hooks/useDrizzle';
 
 interface note {
   id: number;
@@ -15,8 +15,7 @@ interface note {
 }
 
 export default function NotesList() {
-  const rawDb = useSQLiteContext();
-  const db = drizzle(rawDb);
+  const db = useDrizzle();
   const { data } = useLiveQuery(db.select().from(notesTable));
   const renderItem = useCallback(({ item }: { item: note }) => <Item item={item} />, []);
 

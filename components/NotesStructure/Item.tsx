@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { Text, Button, Pressable } from 'react-native';
 import equal from 'fast-deep-equal';
+import useHandleButtons from '~/hooks/useHandleButtons';
 
 interface note {
   id: number;
@@ -12,13 +13,16 @@ interface note {
 }
 
 const Item = ({ item }: { item: note }) => {
+  const { handleDelete, handleNavigate } = useHandleButtons();
+
   return (
     console.log('🔁 Renderizando', item.title),
     (
-      <View>
+      <Pressable onPress={() => handleNavigate(item.id)}>
         <Text>{item.title}</Text>
         <Text>{item.content}</Text>
-      </View>
+        <Button title="delete" onPress={() => handleDelete(item.id)} />
+      </Pressable>
     )
   );
 };

@@ -1,14 +1,15 @@
-import { router } from 'expo-router';
-import { Button } from 'react-native';
 import { Container } from '~/components/Container';
 import Notes from './notes/Notes';
+import AddButton from '~/components/AddButton';
+import Title from '~/components/AppHeader/Title';
 
 export default function Home() {
   return (
     <>
       <Container>
+        <Title />
         <Notes />
-        <Button title="Add note" onPress={() => router.push('/notes/Form')} />
+        <AddButton />
       </Container>
     </>
   );

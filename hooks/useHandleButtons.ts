@@ -2,9 +2,11 @@ import { eq } from 'drizzle-orm';
 import { notesTable } from '~/db/schema';
 import useDrizzle from './useDrizzle';
 import { router } from 'expo-router';
+import { UpdateDate } from '~/helpers/UpdateDate';
 
 export default function useHandleButtons() {
   const db = useDrizzle();
+  const date = UpdateDate();
   const color = '#bde0fe';
 
   const handleSave = async (title: string | undefined, content: string | undefined) => {
@@ -14,6 +16,7 @@ export default function useHandleButtons() {
           title: title,
           content: content,
           color: color,
+          updatedDate: date,
         },
       ]);
       router.back();
@@ -33,6 +36,10 @@ export default function useHandleButtons() {
   };
 
   const handleNavigate = (id: number) => {
+    if (typeof id !== 'number') {
+      router.push('/+not-found');
+      return;
+    }
     router.push({ pathname: '/notes/[id]', params: { id } });
   };
 

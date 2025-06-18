@@ -1,7 +1,6 @@
-import { View, Text, Button } from 'react-native';
+import { View, Text } from 'react-native';
 import { FormatDate } from '~/helpers/FormatDate';
-import useHandleButtons from '~/hooks/useHandleButtons';
-import useNotesInput from '~/hooks/useNotesInput';
+import NotesForm from '../NotesForm';
 
 interface note {
   id: number;
@@ -13,16 +12,11 @@ interface note {
 }
 
 export default function ItemId({ item }: { item: note }) {
-  const { title, setTitle, content, setContent } = useNotesInput();
-  const { handleSave, handleDelete } = useHandleButtons();
   const formatDate = FormatDate(item.createdDate);
 
   return (
     <View>
-      <Button title="Save" onPress={() => handleSave(title, content)} />
-      <Button title="Delete" onPress={() => handleDelete(item.id)} />
-      <Text>{item.title}</Text>
-      <Text>{item.content}</Text>
+      <NotesForm item={item} />
       <Text>{formatDate}</Text>
       <Text>{item.updatedDate}</Text>
     </View>

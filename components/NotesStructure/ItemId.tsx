@@ -12,6 +12,7 @@ interface note {
 }
 
 export default function ItemId({ item }: { item: note }) {
+  //Esta linea formatea la fecha de la db usando mi helper
   const formatDate = FormatDate(item.createdDate);
 
   return (

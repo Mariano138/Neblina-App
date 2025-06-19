@@ -5,6 +5,7 @@ import { StyleSheet, Text } from 'react-native';
 import { Container } from '~/components/Container';
 
 export default function NotFoundScreen() {
+  //Este componente solo se muestra si no se puede acceder a la ruta deseada
   return (
     <>
       <Stack.Screen options={{ title: 'Oops!' }} />

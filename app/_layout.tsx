@@ -6,12 +6,14 @@ import { Suspense, useEffect } from 'react';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import migrations from '../drizzle/migrations';
 
+//Creo mi DB y la integro en drizzle
 const expo = SQLite.openDatabaseSync('notes.db');
 const db = drizzle(expo);
 
 export default function Layout() {
   const { success, error } = useMigrations(db, migrations);
 
+  //Manejo los distintos casos de la migracion
   useEffect(() => {
     if (!success) return;
   }, [success]);
@@ -31,7 +33,8 @@ export default function Layout() {
       </View>
     );
   }
-
+  //Uso suspense para esperar a que la db este lista antes de usarse
+  //Enable change listener para que poder usar livequery y actualizar los datos en tiempo real
   return (
     <Suspense fallback={<ActivityIndicator />}>
       <SQLite.SQLiteProvider

@@ -13,8 +13,8 @@ interface note {
 }
 
 const Item = ({ item }: { item: note }) => {
+  //Llamo a la logica de los botones desde mi hook
   const { handleDelete, handleNavigate } = useHandleButtons();
-
   return (
     console.log('🔁 Renderizando', item.title),
     (
@@ -26,7 +26,7 @@ const Item = ({ item }: { item: note }) => {
     )
   );
 };
-
+//Estoy usando react.memo y fast deep equal para comparar props y evitar multiples renders, esto es importante.
 export default React.memo(Item, (prevProps, nextProps) => {
   return equal(prevProps.item, nextProps.item);
 });

@@ -8,18 +8,24 @@ export default function useHandleButtons() {
   const db = useDrizzle();
   //Creo la fecha de actualizacion de cada nota
   const date = UpdateDate();
-  const color = '#bde0fe';
 
   //Esta funcion maneja la logica de agregar o actualizar una nota.
   //Se maneja con un if que si recibe un id actualiza la nota caso contrario la actualiza
   //Fue hecho de esta manera para compartir botones ya que comparto el mismo form para crear o actualizar una nota.
-  const handleAdd = async (id: number | undefined, title: string, content: string) => {
+  const handleAdd = async (
+    id: number | undefined,
+    title: string,
+    content: string,
+    color: string
+  ) => {
     try {
       if (id) {
         await db
           .update(notesTable)
           .set({ title: title, content: content, color: color, updatedDate: date })
           .where(eq(notesTable.id, id));
+        //Actualizo el color
+        handleColorChange(id, color);
       } else if (title.trim() || content.trim() !== '') {
         await db.insert(notesTable).values([
           {
@@ -57,5 +63,16 @@ export default function useHandleButtons() {
     router.push({ pathname: '/notes/[id]', params: { id } });
   };
 
-  return { handleAdd, handleDelete, handleNavigate };
+  //Esta funcion se encarga de actualizar el color de la nota segun elija el usuario
+  const handleColorChange = async (id: number | undefined, color: string) => {
+    try {
+      if (id) {
+        await db.update(notesTable).set({ color: color }).where(eq(notesTable.id, id));
+      }
+    } catch (error) {
+      console.log('Error al actualizar el color.', error);
+    }
+  };
+
+  return { handleAdd, handleDelete, handleNavigate, handleColorChange };
 }

@@ -16,7 +16,7 @@ export default function ItemId({ item }: { item: note }) {
   const formatDate = FormatDate(item.createdDate);
 
   return (
-    <View>
+    <View style={{ backgroundColor: item.color }}>
       <NotesForm item={item} />
       <Text>{formatDate}</Text>
       <Text>{item.updatedDate}</Text>

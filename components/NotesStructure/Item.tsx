@@ -18,7 +18,7 @@ const Item = ({ item }: { item: note }) => {
   return (
     console.log('🔁 Renderizando', item.title),
     (
-      <Pressable onPress={() => handleNavigate(item.id)}>
+      <Pressable style={{ backgroundColor: item.color }} onPress={() => handleNavigate(item.id)}>
         <Text>{item.title}</Text>
         <Text>{item.content}</Text>
         <Button title="delete" onPress={() => handleDelete(item.id)} />
@@ -26,6 +26,7 @@ const Item = ({ item }: { item: note }) => {
     )
   );
 };
+
 //Estoy usando react.memo y fast deep equal para comparar props y evitar multiples renders, esto es importante.
 export default React.memo(Item, (prevProps, nextProps) => {
   return equal(prevProps.item, nextProps.item);

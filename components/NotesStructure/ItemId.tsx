@@ -13,13 +13,13 @@ interface note {
 
 export default function ItemId({ item }: { item: note }) {
   //Esta linea formatea la fecha de la db usando mi helper
-  const formatDate = FormatDate(item.createdDate);
+  const createdDate = FormatDate(item.createdDate);
 
   return (
     <View style={{ backgroundColor: item.color }}>
       <NotesForm item={item} />
-      <Text>{formatDate}</Text>
-      <Text>{item.updatedDate}</Text>
+      <Text>creada el...{createdDate}</Text>
+      <Text>actualizada el...{item.updatedDate}</Text>
     </View>
   );
 }

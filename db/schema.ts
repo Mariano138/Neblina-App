@@ -13,4 +13,5 @@ export const notesTable = sqliteTable('users_table', {
   updatedDate: text()
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
+  reminderDate: text(),
 });

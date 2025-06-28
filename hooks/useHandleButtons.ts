@@ -2,12 +2,13 @@ import { eq } from 'drizzle-orm';
 import { notesTable } from '~/db/schema';
 import useDrizzle from './useDrizzle';
 import { router } from 'expo-router';
-import { UpdateDate } from '~/helpers/UpdateDate';
+import { FormatDate } from '~/helpers/FormatDate';
 
 export default function useHandleButtons() {
   const db = useDrizzle();
   //Creo la fecha de actualizacion de cada nota
-  const date = UpdateDate();
+  const date = new Date();
+  const updatedDate = FormatDate(date);
 
   //Esta funcion maneja la logica de agregar o actualizar una nota.
   //Se maneja con un if que si recibe un id actualiza la nota caso contrario la actualiza
@@ -16,13 +17,20 @@ export default function useHandleButtons() {
     id: number | undefined,
     title: string,
     content: string,
-    color: string
+    color: string,
+    reminderDate: string
   ) => {
     try {
       if (id) {
         await db
           .update(notesTable)
-          .set({ title: title, content: content, color: color, updatedDate: date })
+          .set({
+            title: title,
+            content: content,
+            color: color,
+            updatedDate: updatedDate,
+            reminderDate: reminderDate,
+          })
           .where(eq(notesTable.id, id));
         //Actualizo el color
         handleColorChange(id, color);
@@ -32,7 +40,8 @@ export default function useHandleButtons() {
             title: title,
             content: content,
             color: color,
-            updatedDate: date,
+            updatedDate: updatedDate,
+            reminderDate: reminderDate,
           },
         ]);
       }

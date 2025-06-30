@@ -1,17 +1,28 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Button, SafeAreaView, Text } from 'react-native';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { FormatDate } from '~/helpers/FormatDate';
 
-type ReminderDateProps = {
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+
+import { FormatDate } from '~/utils/FormatDate';
+import { Note } from '~/types/note';
+
+type DatePickerProps = {
   reminder: Date;
+  item?: Note;
   setReminder: Dispatch<SetStateAction<Date>>;
+  setSendDateDb: Dispatch<SetStateAction<boolean>>;
 };
 
-export default function ReminderDate({ reminder, setReminder }: ReminderDateProps) {
+export default function DatePicker({
+  reminder,
+  setReminder,
+  item,
+  setSendDateDb,
+}: DatePickerProps) {
   const [mode, setMode] = useState<'date' | 'time'>('date');
   const [show, setShow] = useState<boolean>(false);
   const [tempDate, setTempDate] = useState<Date | undefined>(undefined); // Aca guardo mi fecha temporalmente para despues poder combinarla con la hora elegido y ahi recien guardarla con setDate.
+  const [showDate, setShowDate] = useState<Date | null>(null);
   const formatedDate = FormatDate(reminder); //Formateo la fecha para mostrarla acorde a las demas.
 
   const handleChange = (event: DateTimePickerEvent, selectedDate: Date | undefined) => {
@@ -19,8 +30,11 @@ export default function ReminderDate({ reminder, setReminder }: ReminderDateProp
     if (event.type === 'dismissed') {
       setShow(false);
       setTempDate(undefined);
+      setShowDate(null);
+      setSendDateDb(false);
       return;
     }
+    setSendDateDb(true);
     //Guardo la fecha elegida en mi tempDate y pongo el mode en 'time' para que se ejecute mi else if y el show en true para que aparezca el Datepicker en pontalla.
     if (mode === 'date') {
       setTempDate(selectedDate);
@@ -35,6 +49,7 @@ export default function ReminderDate({ reminder, setReminder }: ReminderDateProp
       combinedDate.setSeconds(0);
       setReminder(combinedDate);
       setShow(false);
+      setShowDate(combinedDate);
       setTempDate(undefined);
     }
   };
@@ -48,7 +63,9 @@ export default function ReminderDate({ reminder, setReminder }: ReminderDateProp
   return (
     <SafeAreaView>
       <Button onPress={showPicker} title="Show date picker!" />
-      <Text>Fecha elegida: {formatedDate}</Text>
+      {(item?.reminderDate != null || showDate !== null) && (
+        <Text>Fecha elegida: {formatedDate}</Text>
+      )}
       {show && (
         <DateTimePicker value={reminder} mode={mode} is24Hour={true} onChange={handleChange} />
       )}

@@ -1,4 +1,4 @@
-import NotesList from '~/components/NotesList';
+import NotesList from '~/components/notes/NotesList';
 
 export default function Notes() {
   return <NotesList />;

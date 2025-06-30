@@ -1,16 +1,13 @@
-import { Container } from '~/components/Container';
 import Notes from './notes/Notes';
-import AddButton from '~/components/AddButton';
-import Title from '~/components/AppHeader/Title';
+import AddButton from '~/components/main-screen/AddButton';
+import Title from '~/components/main-screen/Title';
 
 export default function Home() {
   return (
     <>
-      <Container>
-        <Title />
-        <Notes />
-        <AddButton />
-      </Container>
+      <Title />
+      <Notes />
+      <AddButton />
     </>
   );
 }

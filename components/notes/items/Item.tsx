@@ -1,20 +1,16 @@
 import React from 'react';
 import { Text, Button, Pressable } from 'react-native';
+
 import equal from 'fast-deep-equal';
+
 import useHandleButtons from '~/hooks/useHandleButtons';
+import { Note } from '~/types/note';
+import Navigate from '~/utils/Navigate';
 
-interface note {
-  id: number;
-  title: string | null;
-  content: string | null;
-  color: string;
-  createdDate: string;
-  updatedDate: string;
-}
+const Item = ({ item }: { item: Note }) => {
+  const { handleDelete } = useHandleButtons(); //Hook para borrar la nota.
+  const { handleNavigate } = Navigate(); //Util para navegar a la nota segun id.
 
-const Item = ({ item }: { item: note }) => {
-  //Llamo a la logica de los botones desde mi hook
-  const { handleDelete, handleNavigate } = useHandleButtons();
   return (
     console.log('🔁 Renderizando', item.title),
     (

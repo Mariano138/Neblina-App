@@ -6,15 +6,13 @@ import { FormatDate } from '~/utils/FormatDate';
 import { Note } from '~/types/note';
 
 export default function ItemId({ item }: { item: Note }) {
-  //Formateo ambas fechas para mostrarlas.
-  const createdDate = FormatDate(item.createdDate);
-  const updatedDate = FormatDate(item.updatedDate);
+  const createdDate = FormatDate(item.createdDate); //Formateo la fecha para que coincida con las demas.
 
   return (
     <View style={{ backgroundColor: item.color }}>
       <NotesForm item={item} />
       <Text>creada el...{createdDate}</Text>
-      <Text>actualizada el...{updatedDate}</Text>
+      <Text>actualizada el...{item.updatedDate}</Text>
     </View>
   );
 }

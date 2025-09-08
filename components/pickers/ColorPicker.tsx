@@ -1,10 +1,10 @@
-import { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { Pressable, View } from 'react-native';
 
 import GenerateColor from '~/utils/GenerateColor';
 
-export default function ColorPicker({ setColor }: { setColor: Dispatch<SetStateAction<string>> }) {
-  //Esta funcion solo pone el color en el useState la actualizacion se maneja en el componente padre
+const ColorPicker = ({ setColor }: { setColor: Dispatch<SetStateAction<string>> }) => {
+  //Es.ta funcion solo pone el color en el useState la actualizacion se maneja en el componente padre
   const handleColorPick = async (color: string) => {
     setColor(color);
   };
@@ -22,4 +22,5 @@ export default function ColorPicker({ setColor }: { setColor: Dispatch<SetStateA
       ))}
     </View>
   );
-}
+};
+export default React.memo(ColorPicker);

@@ -4,16 +4,14 @@ import Drizzle from '../utils/Drizzle';
 
 import { router } from 'expo-router';
 
-import { FormatDate } from '~/utils/FormatDate';
 import GenerateColor from '~/utils/GenerateColor';
+import useNotifications from './useNotifications';
 
 export default function useHandleButtons() {
   const db = Drizzle();
-  //Creo la fecha de actualizacion de cada nota.
-  const date = new Date();
-  const updatedDate = FormatDate(date);
 
   const { handleColorChange } = GenerateColor();
+  const sendNotification = useNotifications();
 
   //Esta funcion maneja la logica de agregar o actualizar una nota.
   //Se maneja con un if que si recibe un id actualiza la nota caso contrario la actualiza
@@ -33,7 +31,7 @@ export default function useHandleButtons() {
             title: title,
             content: content,
             color: color,
-            updatedDate: updatedDate,
+            updatedDate: new Date().toString(),
             reminderDate: reminderDate,
           })
           .where(eq(notesTable.id, id));
@@ -50,6 +48,11 @@ export default function useHandleButtons() {
         ]);
       }
       router.back();
+
+      //Si hay reminderDate la envio a mi funcion para crear el trigger de la notificacion
+      if (reminderDate != null) {
+        sendNotification(new Date(reminderDate), title);
+      }
     } catch (error) {
       console.log('Error al agregar la nota.', error);
     }
@@ -67,6 +70,22 @@ export default function useHandleButtons() {
       console.log('Error al eliminar la nota.', error);
     }
   };
+  //Funcion para borrar la fecha.
+  const deleteReminder = async (
+    id: number | undefined,
+    onReminderSelect: (date: Date | undefined) => void,
+    setShowDate: React.Dispatch<React.SetStateAction<Boolean>>
+  ) => {
+    try {
+      if (id) {
+        await db.update(notesTable).set({ reminderDate: null }).where(eq(notesTable.id, id));
+        onReminderSelect(undefined);
+        setShowDate(false);
+      }
+    } catch (error) {
+      console.log('Error al eliminar el recordatorio.', error);
+    }
+  };
 
-  return { handleAdd, handleDelete };
+  return { handleAdd, handleDelete, deleteReminder };
 }

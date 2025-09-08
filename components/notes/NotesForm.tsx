@@ -14,13 +14,13 @@ import { Note } from '~/types/note';
 export default function NotesForm({ item }: { item?: Note }) {
   const { title, setTitle, content, setContent, reminder, setReminder } = useNotesForm({ item });
 
-  const { handleAdd, handleDelete } = useHandleButtons(); //Logica de agrear o borrar una nota de mi hook.
-
   //Genero un color random para la nota si no selecciona uno.
   const { randomColor } = GenerateColor();
   const [color, setColor] = useState<string>(item?.color ?? randomColor); // Uso el color existente caso contrario genero uno.
 
   //Estas funciones llaman a las de mi hook pasandole los parametros necesarios para crear/actualizar borrar/cancelar.
+  const { handleAdd, handleDelete } = useHandleButtons(); //Logica de agrear o borrar una nota de mi hook.
+
   const handleSubmit = async () => {
     try {
       await handleAdd(item?.id, title, content, color, reminder?.toISOString());

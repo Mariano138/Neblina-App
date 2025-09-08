@@ -10,13 +10,12 @@ type DatePickerProps = {
 
 export default function useDatePicker({ item, onSelect }: DatePickerProps) {
   const [reminder, setReminder] = useState<Date>(new Date(item?.reminderDate ?? new Date())); //Tengo que transformar el remiderDate de la db a DATE porque datepicker solo acepta Date de value y no strings.
-  const [mode, setMode] = useState<'date' | 'time'>('date');
-  const [show, setShow] = useState<boolean>(false);
+  const [mode, setMode] = useState<'date' | 'time'>('date'); //El mode se refiere a si esta eligiendo la fecha o la hora.
+  const [show, setShow] = useState<boolean>(false); //Esto para mostrar o no el selector.
 
   const [tempDate, setTempDate] = useState<Date | undefined>(undefined); // Aca guardo mi fecha temporalmente para despues poder combinarla con la hora elegido y ahi recien guardarla con setDate.
-  const [showDate, setShowDate] = useState<Date | null>(null); //Muestra la fecha si se elije una
+  const [showDate, setShowDate] = useState<Boolean>(false); //Muestra la fecha si se elije una
 
-  const [sendDate, setSendDate] = useState(false); //Estado para saber si enviar la fecha a la db.
   const formatedDate = FormatDate(reminder); //Formateo la fecha para mostrarla acorde a las demas.
 
   const handleChange = (event: DateTimePickerEvent, selectedDate: Date | undefined) => {
@@ -24,11 +23,9 @@ export default function useDatePicker({ item, onSelect }: DatePickerProps) {
     if (event.type === 'dismissed') {
       setShow(false);
       setTempDate(undefined);
-      setShowDate(null);
-      setSendDate(false);
+      setShowDate(false);
       return;
     }
-    setSendDate(true);
 
     //Guardo la fecha elegida en mi tempDate y pongo el mode en 'time' para que se ejecute mi else if y el show en true para que aparezca el Datepicker en pantalla.
     if (mode === 'date') {
@@ -42,9 +39,10 @@ export default function useDatePicker({ item, onSelect }: DatePickerProps) {
       combinedDate.setHours(selectedDate.getHours());
       combinedDate.setMinutes(selectedDate.getMinutes());
       combinedDate.setSeconds(0);
+      if (combinedDate.getTime() <= Date.now()) return;
       setReminder(combinedDate);
       setShow(false);
-      setShowDate(combinedDate);
+      setShowDate(true);
       setTempDate(undefined);
       onSelect(combinedDate);
     }
@@ -55,16 +53,17 @@ export default function useDatePicker({ item, onSelect }: DatePickerProps) {
     setMode('date');
     setShow(true);
   };
+
   return {
     reminder,
     mode,
     show,
 
     showDate,
+    setShowDate,
     showPicker,
 
     handleChange,
     formatedDate,
-    sendDate,
   };
 }

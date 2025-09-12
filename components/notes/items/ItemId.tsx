@@ -1,10 +1,9 @@
-import { View, Text, Button } from 'react-native';
+import { View, Text } from 'react-native';
 
 import NotesForm from '../NotesForm';
 
 import { FormatDate } from '~/utils/FormatDate';
 import { Note } from '~/types/note';
-import useNotifications from '~/hooks/useNotifications';
 
 export default function ItemId({ item }: { item: Note }) {
   //Formateo las fechas para que coincidan.

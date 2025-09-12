@@ -1,15 +1,11 @@
-import { Link, Stack } from 'expo-router';
 import { StyleSheet, Text } from 'react-native';
 
 export default function NotFoundScreen() {
   //Este componente solo se muestra si no se puede acceder a la ruta deseada
   return (
     <>
-      <Stack.Screen options={{ title: 'Oops!' }} />
       <Text style={styles.title}>{"This screen doesn't exist."}</Text>
-      <Link href="/" style={styles.link}>
-        <Text style={styles.linkText}>Go to home screen!</Text>
-      </Link>
+      <Text style={styles.linkText}>Go to home screen!</Text>
     </>
   );
 }

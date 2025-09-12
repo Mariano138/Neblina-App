@@ -2,13 +2,13 @@ import { eq } from 'drizzle-orm';
 import { notesTable } from '~/db/schema';
 import Drizzle from '../utils/Drizzle';
 
-import { router } from 'expo-router';
-
 import GenerateColor from '~/utils/GenerateColor';
 import useNotifications from './useNotifications';
+import { useNavigation } from '@react-navigation/native';
 
 export default function useHandleButtons() {
   const db = Drizzle();
+  const navigation = useNavigation();
 
   const { handleColorChange } = GenerateColor();
   const sendNotification = useNotifications();
@@ -47,7 +47,7 @@ export default function useHandleButtons() {
           },
         ]);
       }
-      router.back();
+      navigation.goBack();
 
       //Si hay reminderDate la envio a mi funcion para crear el trigger de la notificacion
       if (reminderDate != null) {
@@ -63,8 +63,8 @@ export default function useHandleButtons() {
       if (id) {
         await db.delete(notesTable).where(eq(notesTable.id, id));
       }
-      if (router.canGoBack()) {
-        router.back();
+      if (navigation.canGoBack()) {
+        navigation.goBack();
       }
     } catch (error) {
       console.log('Error al eliminar la nota.', error);
@@ -79,9 +79,9 @@ export default function useHandleButtons() {
     try {
       if (id) {
         await db.update(notesTable).set({ reminderDate: null }).where(eq(notesTable.id, id));
-        onReminderSelect(undefined);
-        setShowDate(false);
       }
+      onReminderSelect(undefined);
+      setShowDate(false);
     } catch (error) {
       console.log('Error al eliminar el recordatorio.', error);
     }

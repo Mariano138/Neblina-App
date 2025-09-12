@@ -3,7 +3,7 @@
   "projectName": "neblina",
   "packages": [
     {
-      "name": "expo-router",
+      "name": "react-navigation",
       "type": "navigation",
       "options": {
         "type": "stack"

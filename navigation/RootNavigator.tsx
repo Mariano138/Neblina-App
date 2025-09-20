@@ -10,10 +10,15 @@ import NotFoundScreen from '~/screens/+not-found';
 const RootStack = createNativeStackNavigator<RootStackParamList>({
   initialRouteName: 'Home',
   screens: {
-    Home: HomeScreen,
-    Form: Form,
-    Note: NoteId,
-    NotFound: NotFoundScreen,
+    Home: {
+      screen: HomeScreen,
+      options: {
+        headerShown: false,
+      },
+    },
+    Form: { screen: Form, options: { headerShown: false } },
+    Note: { screen: NoteId, options: { headerShown: false } },
+    NotFound: { screen: NotFoundScreen, options: { headerShown: false } },
   },
 });
 

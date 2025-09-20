@@ -5,6 +5,7 @@ import Drizzle from '../utils/Drizzle';
 import GenerateColor from '~/utils/GenerateColor';
 import useNotifications from './useNotifications';
 import { useNavigation } from '@react-navigation/native';
+import { Note } from '~/types/note';
 
 export default function useHandleButtons() {
   const db = Drizzle();
@@ -21,9 +22,24 @@ export default function useHandleButtons() {
     title: string,
     content: string,
     color: string,
-    reminderDate?: string
+    goBackAfterSave: boolean,
+    reminderDate?: string,
+    item?: Note
   ) => {
     try {
+      //Si no cambia nada evito llamar a la db.
+      if (item) {
+        const hasChanged =
+          item.title !== title ||
+          item.content !== content ||
+          item.color !== color ||
+          item.reminderDate != reminderDate;
+        if (!hasChanged) {
+          if (goBackAfterSave) navigation.goBack();
+          return;
+        }
+      }
+
       if (id) {
         await db
           .update(notesTable)
@@ -47,7 +63,7 @@ export default function useHandleButtons() {
           },
         ]);
       }
-      navigation.goBack();
+      if (goBackAfterSave) navigation.goBack();
 
       //Si hay reminderDate la envio a mi funcion para crear el trigger de la notificacion
       if (reminderDate != null) {
@@ -57,7 +73,7 @@ export default function useHandleButtons() {
       console.log('Error al agregar la nota.', error);
     }
   };
-  //Esta funcion tiene las mismas caracteristicas nombras en el comentario anterior.
+  //Esta funcion tiene las mismas caracteristicas nombradas en el comentario anterior.
   const handleDelete = async (id: number | undefined) => {
     try {
       if (id) {
@@ -70,6 +86,12 @@ export default function useHandleButtons() {
       console.log('Error al eliminar la nota.', error);
     }
   };
+
+  //Funcion para volver atras.
+  const handleBack = () => {
+    navigation.goBack();
+  };
+
   //Funcion para borrar la fecha.
   const deleteReminder = async (
     id: number | undefined,
@@ -87,5 +109,5 @@ export default function useHandleButtons() {
     }
   };
 
-  return { handleAdd, handleDelete, deleteReminder };
+  return { handleAdd, handleDelete, handleBack, deleteReminder };
 }

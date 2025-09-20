@@ -9,6 +9,7 @@ import useNotesForm from '~/hooks/useNotesForm';
 
 import GenerateColor from '~/utils/GenerateColor';
 import { Note } from '~/types/note';
+import useUserActions from '~/hooks/useUserActions';
 
 //Recibo el item desde donde llaman a notes form para completar los campos
 export default function NotesForm({ item }: { item?: Note }) {
@@ -19,15 +20,26 @@ export default function NotesForm({ item }: { item?: Note }) {
   const [color, setColor] = useState<string>(item?.color ?? randomColor); // Uso el color existente caso contrario genero uno.
 
   //Estas funciones llaman a las de mi hook pasandole los parametros necesarios para crear/actualizar borrar/cancelar.
-  const { handleAdd, handleDelete } = useHandleButtons(); //Logica de agrear o borrar una nota de mi hook.
+  const { handleAdd, handleDelete, handleBack } = useHandleButtons(); //Logica de agrear o borrar una nota de mi hook.
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (goBackAfterSave = true) => {
     try {
-      await handleAdd(item?.id, title, content, color, reminder?.toISOString());
+      await handleAdd(
+        item?.id,
+        title,
+        content,
+        color,
+        goBackAfterSave,
+        reminder?.toISOString(),
+        item
+      );
     } catch (error) {
       console.log('Error en el submit del form.', error);
     }
   };
+
+  useUserActions({ handleSubmit });
+
   const handleCancel = async () => {
     try {
       await handleDelete(item?.id);
@@ -38,7 +50,8 @@ export default function NotesForm({ item }: { item?: Note }) {
 
   return (
     <View style={{ backgroundColor: color }}>
-      <Button title="Save" onPress={handleSubmit} />
+      <Button title="Back" onPress={handleBack} />
+      <Button title="Save" onPress={() => handleSubmit(true)} />
       <Button title="Delete" onPress={handleCancel} />
       <ColorPicker setColor={setColor} />
       <TextInput placeholder="title" value={title} onChangeText={(text) => setTitle(text)} />

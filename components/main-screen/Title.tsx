@@ -1,10 +1,20 @@
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 export default function Title() {
-  //Este componente solo maneja el titulo o header
   return (
     <View>
-      <Text>Neblina</Text>
+      <Text style={styles.title}>Neblina</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 25,
+    color: '#000000be',
+    fontFamily: 'Montserrat_700Bold_Italic',
+    textShadowColor: 'rgba(0, 0, 0, 0.20)',
+    textShadowOffset: { width: 1, height: 4 },
+    textShadowRadius: 5,
+  },
+});

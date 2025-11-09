@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { int, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 //Esquema de mis notas en la db
 export const notesTable = sqliteTable('users_table', {
@@ -14,4 +14,5 @@ export const notesTable = sqliteTable('users_table', {
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
   reminderDate: text(),
+  pinned: integer({ mode: 'boolean' }).default(false).notNull(),
 });

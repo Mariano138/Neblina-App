@@ -6,5 +6,6 @@ export interface Note {
   createdDate: string;
   updatedDate: string;
   reminderDate: string | null;
+  pinned: boolean;
 }
 //Interfaz de mi nota.

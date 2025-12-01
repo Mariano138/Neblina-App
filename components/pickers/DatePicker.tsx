@@ -6,6 +6,8 @@ import useDatePicker from '~/hooks/useDatePicker';
 import React from 'react';
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Animated from 'react-native-reanimated';
+import useButtonAnimation from '~/animations/useButtonAnimation';
 
 type DatePickerProps = {
   item?: Note;
@@ -14,21 +16,28 @@ type DatePickerProps = {
 
 const DatePicker = ({ datePicker }: DatePickerProps) => {
   const { reminder, mode, show, showPicker, handleChange } = datePicker;
+  const reminderButton = useButtonAnimation({
+    initialColor: '#f8edeb',
+    endColor: '#f7d8d3ff',
+  });
 
   return (
-    <SafeAreaView>
-      <Pressable style={[styles.reminder, styles.shadowButton]} onPress={showPicker}>
+    <Animated.View
+      style={[reminderButton.animatedButtonStyle, styles.reminder, styles.shadowButton]}>
+      <Pressable
+        onPressIn={reminderButton.onPressInButton}
+        onPressOut={reminderButton.onPressOutButton}
+        onPress={showPicker}>
         <MaterialIcons name="access-alarm" size={24} color="black" />
       </Pressable>
       {show && (
         <DateTimePicker value={reminder} mode={mode} is24Hour={true} onChange={handleChange} />
       )}
-    </SafeAreaView>
+    </Animated.View>
   );
 };
 const styles = StyleSheet.create({
   reminder: {
-    backgroundColor: '#f8edeb',
     width: 45,
     height: 45,
     justifyContent: 'center',

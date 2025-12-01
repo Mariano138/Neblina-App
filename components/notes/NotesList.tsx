@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { View, FlatList } from 'react-native';
+import { View } from 'react-native';
 
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { notesTable } from '~/db/schema';
@@ -8,6 +8,7 @@ import Drizzle from '~/utils/Drizzle';
 import Item from './items/Item';
 import { Note } from '~/types/note';
 import { desc } from 'drizzle-orm';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 
 export default function NotesList() {
   //llamo a mi db usando mi hook para que use drizzle y luego uso livequery para ver mi db en tiempo real.
@@ -21,7 +22,12 @@ export default function NotesList() {
 
   return (
     <View>
-      <FlatList data={data} keyExtractor={(item) => item.id.toString()} renderItem={renderItem} />
+      <Animated.FlatList
+        data={data}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderItem}
+        itemLayoutAnimation={LinearTransition}
+      />
     </View>
   );
 }

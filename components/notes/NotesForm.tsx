@@ -17,6 +17,8 @@ import Feather from '@expo/vector-icons/Feather';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useDatePicker from '~/hooks/useDatePicker';
 import ReminderDate from '../pickers/ReminderDate';
+import useButtonAnimation from '~/animations/useButtonAnimation';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 
 //Recibo el item desde donde llaman a notes form para completar los campos
 export default function NotesForm({ item }: { item?: Note }) {
@@ -33,6 +35,21 @@ export default function NotesForm({ item }: { item?: Note }) {
 
   //Estas funciones llaman a las de mi hook pasandole los parametros necesarios para crear/actualizar borrar/cancelar.
   const { handleAdd, handleDelete, handleBack } = useHandleButtons(); //Logica de agrear o borrar una nota de mi hook.
+
+  const saveButton = useButtonAnimation({
+    initialColor: '#DFFFE7',
+    endColor: '#bcf7caff',
+  });
+
+  const deleteButton = useButtonAnimation({
+    initialColor: '#FFC4C4',
+    endColor: '#fc8c8cff',
+  });
+
+  const backButton = useButtonAnimation({
+    initialColor: '#ffffff00',
+    endColor: '#ffffff00',
+  });
 
   const handleSubmit = async (goBackAfterSave = true) => {
     try {
@@ -63,45 +80,60 @@ export default function NotesForm({ item }: { item?: Note }) {
   return (
     <SafeAreaView style={[{ backgroundColor: color }, styles.container]}>
       <View style={styles.navButtons}>
-        <View>
-          <Pressable onPress={handleBack}>
+        <Animated.View style={[backButton.animatedButtonStyle]}>
+          <Pressable
+            onPressIn={backButton.onPressInButton}
+            onPressOut={backButton.onPressOutButton}
+            onPress={handleBack}>
             <Feather name="arrow-left" size={24} color="black" />
           </Pressable>
-        </View>
+        </Animated.View>
         <View style={styles.saveDeleteButtons}>
           <DatePicker item={item} datePicker={datePickerProps} />
 
-          <Pressable
-            style={[styles.saveButton, styles.shadowButton]}
-            onPress={() => handleSubmit(true)}>
-            <Feather name="save" size={24} color="black" />
-          </Pressable>
+          <Animated.View
+            style={[saveButton.animatedButtonStyle, styles.saveButton, styles.shadowButton]}>
+            <Pressable
+              onPress={() => handleSubmit(true)}
+              onPressIn={saveButton.onPressInButton}
+              onPressOut={saveButton.onPressOutButton}>
+              <Feather name="save" size={24} color="black" />
+            </Pressable>
+          </Animated.View>
 
           {item && (
-            <Pressable style={[styles.deleteButton, styles.shadowButton]} onPress={handleCancel}>
-              <Feather name="trash-2" size={24} color="black" />
-            </Pressable>
+            <Animated.View
+              style={[deleteButton.animatedButtonStyle, styles.deleteButton, styles.shadowButton]}>
+              <Pressable
+                onPressIn={deleteButton.onPressInButton}
+                onPressOut={deleteButton.onPressOutButton}
+                onPress={handleCancel}>
+                <Feather name="trash-2" size={24} color="black" />
+              </Pressable>
+            </Animated.View>
           )}
         </View>
       </View>
       <ColorPicker setColor={setColor} />
-      <View style={styles.titleContainer}>
-        <TextInput
-          style={styles.title}
-          placeholder="title"
-          multiline
-          numberOfLines={4}
-          value={title}
-          onChangeText={(text) => setTitle(text)}
-        />
+      <View style={styles.datesContainer}>
         {item && <Text style={styles.createdDate}>{createdDate}</Text>}
+        {item && <Text style={styles.updatedDate}>Editado: {updatedDate}</Text>}
       </View>
-      {item && <Text style={styles.updatedDate}>Editado: {updatedDate}</Text>}
-      <ReminderDate item={item} datePicker={datePickerProps} onSelect={setReminder} />
+      <Animated.View layout={LinearTransition}>
+        <ReminderDate item={item} datePicker={datePickerProps} onSelect={setReminder} />
+      </Animated.View>
+      <TextInput
+        style={styles.title}
+        placeholder="Título"
+        multiline
+        value={title}
+        onChangeText={(text) => setTitle(text)}
+      />
+
       <View style={styles.line}></View>
       <TextInput
         style={styles.content}
-        placeholder="content"
+        placeholder="Nota"
         multiline
         value={content}
         onChangeText={(text) => setContent(text)}
@@ -143,19 +175,17 @@ const styles = StyleSheet.create({
   shadowButton: {
     boxShadow: `0px 4px 5px rgba(0, 0, 0, 0.25)`,
   },
-  titleContainer: {
+  datesContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingTop: 20,
   },
   title: {
-    flex: 1,
     fontSize: 27,
     fontFamily: 'Montserrat_700Bold',
     color: '#4F4F4F',
     paddingHorizontal: 0,
-    minHeight: 80,
-    maxHeight: 200,
   },
   content: {
     flex: 1,
@@ -176,7 +206,7 @@ const styles = StyleSheet.create({
   line: {
     height: 1,
     backgroundColor: '#0000007e',
-    marginTop: 18,
+    marginTop: 10,
     marginBottom: 10,
   },
 });

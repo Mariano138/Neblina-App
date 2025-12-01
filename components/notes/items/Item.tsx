@@ -9,6 +9,9 @@ import { Note } from '~/types/note';
 import Navigate from '~/utils/Navigate';
 import { useLongPressStore } from '~/store/useLongPressStore';
 import { formatDate } from 'date-fns';
+import useButtonAnimation from '~/animations/useButtonAnimation';
+import Animated from 'react-native-reanimated';
+import useItemAnimation from '~/animations/useItemAnimation';
 
 const Item = ({ item }: { item: Note }) => {
   const { handleDelete } = useHandleButtons(); //Hook para borrar la nota.
@@ -18,45 +21,60 @@ const Item = ({ item }: { item: Note }) => {
   const isSelected = useLongPressStore((state) => state.selectedNotes.includes(item.id));
   const formattedDate = formatDate(item.updatedDate, 'dd MMM');
 
+  const { animatedButtonStyle, onPressInButton, onPressOutButton } = useButtonAnimation({
+    initialColor: '#FFC4C4',
+    endColor: '#fc8c8cff',
+  });
+
+  const { animatedItemStyle, onPressInNote, onPressOutNote } = useItemAnimation();
+
   return (
     console.log('🔁 Renderizando', item.title),
     (
-      <Pressable
-        style={[
-          {
-            backgroundColor: item.color,
-            borderColor: isSelected ? 'black' : 'white',
-          },
-          styles.container,
-        ]}
-        onPress={() => {
-          const { visible, toggleSelection } = useLongPressStore.getState(); //Lo escribo dentro de la funcion para evitar multiples renders.
-          if (visible) {
-            toggleSelection(item.id);
-          } else {
-            handleNavigate(item.id);
-          }
-        }}
-        onLongPress={() => handleLongPress(item.id)}>
-        <View style={styles.view}>
-          <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-            {item.title}
-          </Text>
-          <Text style={styles.content} numberOfLines={4} ellipsizeMode="tail">
-            {item.content}
-          </Text>
+      <Animated.View style={[animatedItemStyle]}>
+        <Pressable
+          style={[
+            {
+              backgroundColor: item.color,
+              borderColor: isSelected ? 'black' : 'white',
+            },
+            styles.container,
+          ]}
+          onPressIn={onPressInNote}
+          onPressOut={onPressOutNote}
+          onPress={() => {
+            const { visible, toggleSelection } = useLongPressStore.getState(); //Lo escribo dentro de la funcion para evitar multiples renders.
+            if (visible) {
+              toggleSelection(item.id);
+            } else {
+              handleNavigate(item.id);
+            }
+          }}
+          onLongPress={() => handleLongPress(item.id)}>
+          <View style={styles.view}>
+            <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+              {item.title}
+            </Text>
+            <Text style={styles.content} numberOfLines={4} ellipsizeMode="tail">
+              {item.content}
+            </Text>
 
-          <View style={styles.viewTrashButton}>
-            <Text style={styles.date}>{formattedDate}</Text>
+            <View style={styles.viewTrashButton}>
+              <Text style={styles.date}>{formattedDate}</Text>
 
-            <Pressable
-              onPress={() => handleDelete(item.id)}
-              style={[styles.trashButton, styles.shadowButton]}>
-              <Feather name="trash" size={24} color="#00000088" />
-            </Pressable>
+              <Animated.View style={[animatedButtonStyle, styles.trashButton, styles.shadowButton]}>
+                <Pressable
+                  onPressIn={onPressInButton}
+                  onPressOut={onPressOutButton}
+                  onPress={() => handleDelete(item.id)}
+                  style={styles.pressableStyles}>
+                  <Feather name="trash" size={24} color="#00000088" />
+                </Pressable>
+              </Animated.View>
+            </View>
           </View>
-        </View>
-      </Pressable>
+        </Pressable>
+      </Animated.View>
     )
   );
 };
@@ -105,6 +123,10 @@ const styles = StyleSheet.create({
     height: 42,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  pressableStyles: {
+    flex: 1,
+    justifyContent: 'center',
   },
   date: {
     fontSize: 18,
